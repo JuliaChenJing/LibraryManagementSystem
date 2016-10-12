@@ -1,0 +1,8 @@
+package business;
+
+public interface ControllerInterface {
+	public void checkoutBook(String memberId, String isbn) throws LibrarySystemException;
+	public boolean addBookCopy(String isbn) throws LibrarySystemException;
+	public Book searchBook(String isbn);
+	public void login(String id, String password) throws LoginException;
+}
