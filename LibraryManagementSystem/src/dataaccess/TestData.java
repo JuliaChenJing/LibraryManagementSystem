@@ -79,7 +79,7 @@ public class TestData {
 		TestData td = new TestData();
 		td.bookData();
 		td.userData();
-//		td.libraryMemberData();
+		td.libraryMemberData();
 		
 		SystemController sc = new SystemController();
 		sc.checkoutBook("123", "23-11451");
@@ -89,7 +89,7 @@ public class TestData {
 		System.out.println(da.readBooksMap());
 		System.out.println(da.readUserMap());
 		System.out.println("-----------------------------------------------");
-//		da.readLibraryMap();
+		da.readLibraryMap();
 //		System.out.println("--->>"+da.readLibraryMap());
 		System.out.println("-----------------------------------------------");
 		

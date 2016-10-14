@@ -15,7 +15,7 @@ public class LibraryMember extends Person implements Serializable{
 	
 	private static final long serialVersionUID = 1234234234230073L;
 	private String memberId;
-	private CheckOutRecords checkoutrecords;
+	private CheckOutRecords checkoutrecords=new CheckOutRecords();
 	
 	public LibraryMember(String m, String f, String l, String t, Address a) {
 		super(f, l, t, a);
@@ -29,13 +29,23 @@ public class LibraryMember extends Person implements Serializable{
 		if(copy.isAvailable())
 		{
 			CheckOutRecordEntries c = new CheckOutRecordEntries(today, today.plusDays(checkOutLength), copy); 
-			CheckOutRecords cr = new CheckOutRecords();
-			List<CheckOutRecordEntries> records = cr.getCe();
-			System.out.println(c);
+			
+			List<CheckOutRecordEntries> records = checkoutrecords.getCe();
+			//System.out.println(c);
 			records.add(c);
+			checkoutrecords.setCe(records);
+			//setCheckoutrecords(records);
+			
 		}
 	}
 	
+	
+		public void setCheckoutrecords(CheckOutRecords checkoutrecords) {
+		this.checkoutrecords = checkoutrecords;
+	}
+		public CheckOutRecords getCheckoutrecords() {
+		return checkoutrecords;
+	}
 		@Override
 	public String toString() {
 		return "LibraryMember [memberId=" + memberId + ", getFirstName()=" + getFirstName() + "]";

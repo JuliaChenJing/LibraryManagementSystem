@@ -1,5 +1,6 @@
 package business;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashMap;
 
@@ -10,7 +11,14 @@ import dataaccess.LibraryMember;
 import dataaccess.User;
 
 public class SystemController implements ControllerInterface {
+	/**
+	 * 
+	 */
+//	private static final long serialVersionUID = -5556150044061540965L;
+
 	public static Auth currentAuth = null;
+	
+	DataAccess abc=new DataAccessFacade();
 	
 	@Override
 	public void login(String id, String password) throws LoginException {
@@ -52,24 +60,31 @@ public class SystemController implements ControllerInterface {
 		// TODO Auto-generated method stub
 		Book b;
 		LibraryMember lm;
-		lm = searchMember(memberId);
+		lm = abc.searchMember(memberId);
 		System.out.println(lm);
 		b = searchBook(isbn);
-		BookCopy bc = b.getNextAvailableCopy();
-		DataAccess da = new DataAccessFacade();
+		
+		
+		//DataAccess da = new DataAccessFacade();
 		try{
 		
-		
+		BookCopy bc = b.getNextAvailableCopy();
 		
 		lm.checkOut(bc, LocalDate.now(), b.getMaxCheckoutLength());
-		
+		bc.changeAvailability();
 		
 		
 		}
+		catch (Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
 		finally{
-		da.updateMember(lm);
-		bc.changeAvailability();
-		da.updateBook(b);
+			System.out.println(""+abc+lm);
+		abc.updateMember(lm);
+		System.out.println("something");
+		
+		abc.updateBook(b);
 		}
 		
 	}

@@ -2,16 +2,24 @@ package application;
 
 import dataaccess.*;
 import javafx.application.Application;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -23,13 +31,24 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
+import application.test.TableData;
 import business.Address;
+import business.Author;
+import business.Book;
+import business.CheckOutRecordEntries;
+import business.CheckOutRecords;
+import business.LibrarySystemException;
 import business.SystemController;
 
 public class UI extends Application {
 
 	DataAccessFacade df  = new DataAccessFacade();
+	DataAccessFacade lm=new DataAccessFacade();
 	
 	SystemController sc = new SystemController();
 	
@@ -43,9 +62,10 @@ public class UI extends Application {
 	// all the panes in the middle
 	GridPane login = new GridPane();
 
-	Auth auth = Auth.NONE;
+	Auth auth=Auth.NONE;
 
 	public static void main(String[] args) {
+		
 		launch(args);
 	}
 
@@ -61,12 +81,13 @@ public class UI extends Application {
 		// set the small pane on the background border
 		border.setCenter(login);
 		border.setLeft(menu);
-
+		//getLibraryMemberTable();
 		// show the window
+		
 		Scene loginScene = new Scene(border);
 		// right=loginScene;
 		primaryStage.setScene(loginScene);
-
+		
 		primaryStage.show();
 
 	}
@@ -123,44 +144,30 @@ public class UI extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				
-				
-				auth = df.login(userIdTextField.getText(), passwordTextField.getText());
-				
-				// do something if the button is clicked
-//				if (userIdTextField.getText().equals("1")
-//						&& passwordTextField.getText().equals("1")) {
-//
-//					informationLable.setText(("librarian login successfully"));
-//					informationLable.setTextFill(Color.RED);  
-//					
-			
-					border.setCenter(getWelcomeLibrarian("Welcome You are a "+auth));
-					// FlowPane xx = (FlowPane) border.getLeft();
-				
-
-//				}
-/*
-				if (userIdTextField.getText().equals("2")
-						&& passwordTextField.getText().equals("2"))
-				// System.out.println("admin login successfully");
+				//while (true)
+				//try {
+				while(auth.equals(Auth.NONE))
+				{	auth = df.login(userIdTextField.getText(), passwordTextField.getText());
+				 
+					// TODO Auto-generated catch block
+				if(auth.equals(Auth.NONE))
 				{
-					informationLable.setText(("admin login successfully"));
-					auth = 2;
-					border.setCenter(getWelcomeLibrarian("Welcome You are a Admin"));
-					// invoke admin window
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Error");
+					alert.setHeaderText("Something wrong with login info");
+					alert.setContentText("Write your username and Password Correctly");
 
+					alert.showAndWait();
+				//	e.printStackTrace();
 				}
-
-				if (userIdTextField.getText().equals("3")
-						&& passwordTextField.getText().equals("3")) {
-					// System.out.println("admin &librarian login successfully");
-					informationLable
-							.setText("admin &librarian login successfully");
-					auth = 3;
-
-					border.setCenter(getWelcomeLibrarian("Welcome You are a librarian and admin"));
-					// invoke both window
-//		}*/				
+				}
+			//}
+				
+				
+			
+					border.setCenter(getWelcomeLibrarian("Welcome to the Library Management System "));
+					
+			
 				border.setLeft(getMenuFlow());
 
 			}
@@ -172,7 +179,7 @@ public class UI extends Application {
 			public void handle(ActionEvent event) {
 
 				informationLable.setText("log out successfully");
-				auth = null;
+				auth =Auth.NONE;
 
 				border.setLeft(getMenuFlow());
 			}
@@ -223,11 +230,11 @@ public class UI extends Application {
 		TextField memberIDTextField = new TextField();
 		checkoutGrid.add(memberIDTextField, 2, 0);
 
-		TextField bookTitleTextField = new TextField();
-		checkoutGrid.add(bookTitleTextField, 2, 1);
+		TextField bookIsbnField = new TextField();
+		checkoutGrid.add(bookIsbnField, 2, 1);
 
-		TextField copyNumberTextField = new TextField();
-		checkoutGrid.add(copyNumberTextField, 2, 2);
+		//TextField copyNumberTextField = new TextField();
+		//checkoutGrid.add(copyNumberTextField, 2, 2);
 
 		// Button
 		Button btnCheckCopyStatus = new Button("Check Book Copy Status");
@@ -241,7 +248,32 @@ public class UI extends Application {
 		hbBtnBorrow.setAlignment(Pos.BOTTOM_RIGHT);
 		hbBtnBorrow.getChildren().add(btnBorrow);
 		checkoutGrid.add(hbBtnBorrow, 2, 4);
+		btnBorrow.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
 
+				try {
+					sc.checkoutBook(memberIDTextField.getText(), bookIsbnField.getText());
+					informationLable.setText("Checkout successfully");
+				} catch (LibrarySystemException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				//auth = null;
+
+				border.setLeft(getMenuFlow());
+			}
+		});
+		/*btnBorrow.setOnAction(lambda->{
+			try {
+				sc.checkoutBook(memberIDTextField.getText(), bookIsbnField.getText());
+			} catch (LibrarySystemException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		});
+*/
 		return checkoutGrid;
 	}
 
@@ -306,6 +338,18 @@ public class UI extends Application {
 		btn5.setOnAction(evt -> border.setCenter(getCheckCopyStatusPane()));
 
 		// };
+		Button btn6 = new Button("Reset UI");
+		// HBox hbBtn5 = new HBox(10);
+		// hbBtn5.setAlignment(Pos.BOTTOM_RIGHT);
+		// hbBtn5.getChildren().add(btn5);
+		// menuGrid.add(hbBtn5, 0, 6);
+		menuGrid.getChildren().add(btn6);
+		btn6.setDisable(false);
+		// return menuGrid;
+		//GridPane blank=new GridPane();
+		btn6.setOnAction(evt -> border.setBottom(getBlankPane()));
+
+		// };
 		switch (auth) {
 		
 		case LIBRARIAN:
@@ -355,6 +399,13 @@ public class UI extends Application {
 		}
 
 		return menuGrid;
+	}
+
+	private GridPane getBlankPane() {
+		// TODO Auto-generated method stub
+		GridPane blank = new GridPane();
+		return blank;
+		
 	}
 
 	public GridPane getAddMemberPane() {
@@ -414,6 +465,8 @@ public class UI extends Application {
 		TextField cellTextField = new TextField();
 		addGrid.add(cellTextField, 2, 7);
 		
+		Label memidLabel=new Label("Member ID:");
+		addGrid.add(memidLabel, 1, 0);
 		TextField memId = new TextField();
 		addGrid.add(memId, 2, 0);
 
@@ -446,7 +499,88 @@ public class UI extends Application {
 
 		return addGrid;
 	}
+/*public GridPane getSearchGridPane()
+{
+	//primaryStage.setTitle("Library Management System");
+	
+	GridPane searchGrid = new GridPane();
+	searchGrid.setAlignment(Pos.CENTER);
+	searchGrid.setHgap(20);
+	searchGrid.setVgap(20);
+	searchGrid.setPadding(new Insets(25, 25, 25, 25));
+	
+	// LALBLE
+	Label idLable = new Label("ID:");
+	searchGrid.add(idLable, 1, 0);
 
+	Label firstnameLable = new Label("First Name:");
+	searchGrid.add(firstnameLable, 1, 1);
+
+	Label lastnameLable = new Label("Last Name:");
+	searchGrid.add(lastnameLable, 1, 2);
+
+	Label streetLable = new Label("Street:");
+	searchGrid.add(streetLable, 1, 3);
+
+	Label cityLable = new Label("City:");
+	searchGrid.add(cityLable, 1, 4);
+
+	Label stateLable = new Label("State:");
+	searchGrid.add(stateLable, 1, 5);
+
+	Label zipLable = new Label("Zip:");
+	searchGrid.add(zipLable, 1, 6);
+
+	Label cellLable = new Label("Cell:");
+	searchGrid.add(cellLable, 1, 7);
+
+	// TEXTField
+
+	TextField idTextField = new TextField();
+	searchGrid.add(idTextField, 2, 0);
+	// idTextField.setVisible(false);
+
+	TextField firstnameTextField = new TextField();
+	searchGrid.add(firstnameTextField, 2, 1);
+
+	TextField lastnameTextField = new TextField();
+	searchGrid.add(lastnameTextField, 2, 2);
+
+	TextField streetTextField = new TextField();
+	searchGrid.add(streetTextField, 2, 3);
+
+	TextField cityTextField = new TextField();
+	searchGrid.add(cityTextField, 2, 4);
+
+	TextField stateTextField = new TextField();
+	searchGrid.add(stateTextField, 2, 5);
+
+	TextField zipTextField = new TextField();
+	searchGrid.add(zipTextField, 2, 6);
+
+	TextField cellTextField = new TextField();
+	searchGrid.add(cellTextField, 2, 7);
+	
+	Button btnSearch = new Button("Search");
+	HBox hbBtnSearch = new HBox(10);
+	hbBtnSearch.setAlignment(Pos.BOTTOM_RIGHT);
+	hbBtnSearch.getChildren().add(btnSearch);
+	searchGrid.add(hbBtnSearch, 3, 0);
+	
+	Button btnUpdate = new Button("Update");
+	HBox hbBtnUpdate = new HBox(10);
+	hbBtnUpdate.setAlignment(Pos.BOTTOM_RIGHT);
+	hbBtnUpdate.getChildren().add(btnUpdate);
+	searchGrid.add(hbBtnUpdate, 2, 8);
+	searchGrid.add(getLibraryMemberTable(idTextField.getText()),2,9);
+	//searchGrid.add();
+	return searchGrid;
+
+	// Scene scene = new Scene(loginGrid, 300, 200);
+	//Scene searchScene = new Scene(searchGrid);
+	//primaryStage.setScene(searchScene);
+	//primaryStage.show();
+}*/
 	public GridPane getSearchMemberPane() {
 		GridPane searchGrid = new GridPane();
 		searchGrid.setAlignment(Pos.CENTER);
@@ -516,15 +650,209 @@ public class UI extends Application {
 		hbBtnSearch.getChildren().add(btnSearch);
 		searchGrid.add(hbBtnSearch, 3, 0);
 
+		
+		Button btncheckoutDetails = new Button("Show Details");
+		HBox hbBtncheckoutDetails= new HBox(10);
+		hbBtnSearch.setAlignment(Pos.BOTTOM_RIGHT);
+		hbBtnSearch.getChildren().add(btncheckoutDetails);
+		searchGrid.add(hbBtncheckoutDetails, 4, 0);
+		btncheckoutDetails.setOnAction(new EventHandler<ActionEvent>()
+				{
+				@Override
+				public void handle(ActionEvent event) {
+				
+				border.setBottom(getLibraryMemberTable(idTextField.getText()));
+				}
+		
+	});
+		
+		
 		Button btnUpdate = new Button("Update");
 		HBox hbBtnUpdate = new HBox(10);
 		hbBtnUpdate.setAlignment(Pos.BOTTOM_RIGHT);
 		hbBtnUpdate.getChildren().add(btnUpdate);
 		searchGrid.add(hbBtnUpdate, 2, 8);
+		btnUpdate.setDisable(true);
+		btnUpdate.setOnAction(new EventHandler<ActionEvent>() {
 
+			@Override
+			public void handle(ActionEvent event) {
+				// do something if the button is clicked
+				
+				Address a = new Address(streetTextField.getText(), cityTextField.getText(), stateTextField.getText(), zipTextField.getText());
+				LibraryMember member=new LibraryMember(idTextField.getText(), firstnameTextField.getText(), lastnameTextField.getText(),
+						cellTextField.getText(), a);
+				//String m = 
+				try {
+				HashMap<String,LibraryMember> test=df.readLibraryMap();
+				LibraryMember nn=test.get(member.getMemberId());
+				nn.setAddress(a);
+				nn.setFirstName(member.getFirstName());
+				nn.setLastName(member.getLastName());
+				nn.setTelephone(member.getTelephone());
+					df.updateMember(nn);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			informationLable.setText("library member added successfully");
+			}
+
+		});
+		btnSearch.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				// do something if the button is clicked
+				LibraryMember lm = df.searchMember(idTextField.getText());
+				System.out.println("ccheck"+lm);
+				idTextField.setText(lm.getMemberId());
+				firstnameTextField.setText(lm.getFirstName());
+				lastnameTextField.setText(lm.getLastName());
+				streetTextField.setText(lm.getAddress().getStreet());
+				cellTextField.setText(lm.getTelephone());
+				zipTextField.setText(lm.getAddress().getZip());
+				stateTextField.setText(lm.getAddress().getState());
+				cityTextField.setText(lm.getAddress().getCity());
+				btnUpdate.setDisable(false);
+				idTextField.setEditable(false);
+				
+			//informationLable.setText("library member added successfully");
+			}
+
+			
+		});
+		
+		//Stage something=new Stage();
+		//something.setScene(getLibraryMemberTable());
 		return searchGrid;
 
 	}
+	public TableView getLibraryMemberTable(String user) {
+		TableView table = new TableView();
+		table.setEditable(true);
+		
+		
+		DataAccessFacade lm=new DataAccessFacade();
+		HashMap<String, LibraryMember> libmem=lm.readLibraryMap();
+		System.out.println("----------");
+		System.out.println(libmem.entrySet());
+		ObservableList<TableData> data = FXCollections.observableArrayList();
+			LibraryMember ll=libmem.get(user);
+		
+				CheckOutRecords some=ll.getCheckoutrecords();
+				List<CheckOutRecordEntries> test=some.getCe();
+				TableData t;
+				for(CheckOutRecordEntries chk: test)
+					{
+					
+					
+			t=new TableData(chk.getBookCopy().getBook().getTitle(),chk.getBookCopy().getBook().getIsbn(),Integer.toString(chk.getBookCopy().getCopyNum()),chk.getCheckOutDate().toString(),chk.getCheckOutDate().plusDays(chk.getBookCopy().getBook().getMaxCheckoutLength()).toString());
+					
+			data.add(t);
+					}
+			
+		
+		TableColumn bookNameCol = new TableColumn("Book Name");  
+        bookNameCol.setMinWidth(200);  
+        bookNameCol.setCellValueFactory(  
+                new PropertyValueFactory<>("bookName"));  
+   
+        TableColumn isbnCol = new TableColumn("ISBN");  
+        isbnCol.setMinWidth(200);  
+        isbnCol.setCellValueFactory(  
+                new PropertyValueFactory<>("ISBN"));  
+   
+        TableColumn copyNumCol = new TableColumn("Book Copy Number");  
+        copyNumCol.setMinWidth(200);  
+        copyNumCol.setCellValueFactory(  
+                new PropertyValueFactory<>("copyNum"));  
+        
+        TableColumn checkoutDateCol = new TableColumn("Checkout Date");  
+        checkoutDateCol.setMinWidth(200);  
+        checkoutDateCol.setCellValueFactory(  
+                new PropertyValueFactory<>("checkoutDate"));  
+   
+        TableColumn dueDateCol = new TableColumn("Due Date");  
+        dueDateCol.setMinWidth(200);  
+        dueDateCol.setCellValueFactory(  
+                new PropertyValueFactory<>("dueDate"));  
+        
+        
+        //set data to table
+        table.setItems(data);  
+        table.getColumns().addAll(bookNameCol,isbnCol, copyNumCol,checkoutDateCol,dueDateCol);  
+		return table;
+		
+	}
+	
+	public static class TableData {  
+	    private final SimpleStringProperty bookName;  
+	    private final SimpleStringProperty isbn;  
+	    private final SimpleStringProperty copyNum;  
+	    private final SimpleStringProperty checkoutDate;  
+	    private final SimpleStringProperty dueDate;  
+	    
+	   
+	    private TableData(String b, String i, String c,String checkoutDate,String dueDate) {  
+	        this.bookName = new SimpleStringProperty(b);  
+	        this.isbn = new SimpleStringProperty(i);  
+	        this.copyNum = new SimpleStringProperty(c);  
+	        this.checkoutDate=new SimpleStringProperty(checkoutDate);  
+	        this.dueDate=new SimpleStringProperty(dueDate);  
+	    }  
+	   
+	    
+
+		public String getBookName() {  
+	        return bookName.get();  
+	    }  
+	    public void setBookName(String fName) {  
+	        bookName.set(fName);  
+	    }  
+	          
+	    public String getISBN() {  
+	        return isbn.get();  
+	    }  
+	    public void setISBN(String fName) {  
+	        isbn.set(fName);  
+	    }  
+	      
+	    public String getCopyNum() {  
+	        return copyNum.get();  
+	    }  
+	    public void setCopyNum(String fName) {  
+	        copyNum.set(fName);  
+	    }  
+	    public String getCheckoutDate() {  
+	        return checkoutDate.get();  
+	    }  
+	    public void setCheckoutDate(String fName) {  
+	        checkoutDate.set(fName);  
+	    }  
+	    
+	    public String getDueDate() {  
+	        return dueDate.get();  
+	    }  
+	    public void setDueDate(String fName) {  
+	        dueDate.set(fName);  
+	    }  
+	   
+	    public TableView getLibraryMemberTable() {
+			TableView table = new TableView();
+			table.setEditable(true);
+
+			TableColumn nameCol = new TableColumn("Name");
+			TableColumn memberIDCol = new TableColumn("member ID");
+			TableColumn bookCol = new TableColumn("Book");
+			TableColumn dueDateCol = new TableColumn("Due Date");
+			TableColumn isOverdueCol = new TableColumn("Is Overdue?");
+
+			table.getColumns().addAll(nameCol, memberIDCol, bookCol,dueDateCol,isOverdueCol);
+			return table;
+		}
+
+}
 
 	public GridPane getAddBookPane() {
 		GridPane addBookGrid = new GridPane();
@@ -549,8 +877,8 @@ public class UI extends Application {
 
 		// TEXTField
 
-		TextField memberIDTextField = new TextField();
-		addBookGrid.add(memberIDTextField, 2, 1);
+		TextField isbnTextField = new TextField();
+		addBookGrid.add(isbnTextField, 2, 1);
 
 		TextField bookTextField = new TextField();
 		addBookGrid.add(bookTextField, 2, 2);
@@ -566,8 +894,32 @@ public class UI extends Application {
 		hbBtnAddBook.setAlignment(Pos.BOTTOM_RIGHT);
 		hbBtnAddBook.getChildren().add(btnAddBook);
 		addBookGrid.add(hbBtnAddBook, 2, 8);
-		return addBookGrid;
+		
 
+		btnAddBook.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				// do something if the button is clicked
+				//Address a = new Address(streetTextField.getText(), cityTextField.getText(), stateTextField.getText(), zipTextField.getText());
+				//String m = 
+				Author a=new Author("ashutosh", "Ghimire", "something", new Address("shfg","jgfs","sajkfg","kjagf"), "Super Gero");
+				List<Author> m=new ArrayList();
+				m.add(a);
+				try {
+				df.saveNewBook(new Book(isbnTextField.getText(), bookTextField.getText(),7, m));	
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+			//informationLable.setText("library member added successfully");
+			}
+
+		});
+		return addBookGrid;
+			
 	}
 
 	public GridPane getAddCopyPane() {
@@ -580,24 +932,56 @@ public class UI extends Application {
 		// LALBLE
 
 		Label bookTitleLable = new Label("Book Title:");
-		addCopyGrid.add(bookTitleLable, 1, 1);
-
+		addCopyGrid.add(bookTitleLable, 0, 0);
+		Label bookTitle=new Label ("");
+		addCopyGrid.add(bookTitle, 0, 1);
 		Label isbnLable = new Label("ISBN:");
 		addCopyGrid.add(isbnLable, 1, 2);
 
 		// TEXTField
 
-		TextField memberIDTextField = new TextField();
-		addCopyGrid.add(memberIDTextField, 2, 1);
+		TextField IsbnTextField = new TextField();
+		addCopyGrid.add(IsbnTextField, 2, 2);
 
-		TextField bookTextField = new TextField();
-		addCopyGrid.add(bookTextField, 2, 2);
+		
 
 		Button btnAddCopy = new Button("Add");
 		HBox hbBtnAddCopy = new HBox(10);
 		hbBtnAddCopy.setAlignment(Pos.BOTTOM_RIGHT);
 		hbBtnAddCopy.getChildren().add(btnAddCopy);
 		addCopyGrid.add(hbBtnAddCopy, 2, 5);
+		
+		btnAddCopy.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				// do something if the button is clicked
+				//Address a = new Address(streetTextField.getText(), cityTextField.getText(), stateTextField.getText(), zipTextField.getText());
+				//String m = 
+				
+				
+				Book b;
+					
+					try {
+						
+						b = df.searchBook(IsbnTextField.getText());
+						bookTitle.setText(b.getTitle()+"Added successfully");
+					
+				
+				
+				
+					b.addCopy();
+				df.updateBook(b);	
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+			//informationLable.setText("library member added successfully");
+			}
+
+		});
 
 		return addCopyGrid;
 	}
@@ -632,6 +1016,9 @@ public class UI extends Application {
 		checkCopyStatusGrid.add(hbBtnAddCopy, 2, 4);
 
 		return checkCopyStatusGrid;
-	}
+	
+
+	          
+	}  
 
 }
