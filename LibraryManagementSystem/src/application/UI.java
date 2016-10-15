@@ -30,6 +30,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -73,6 +75,7 @@ public class UI extends Application {
 	public void start(Stage primaryStage) {
 		// stage is like window
 		primaryStage.setTitle(Title);
+		
 
 		// initiate the pane
 		login = getLoginPane();
@@ -85,6 +88,11 @@ public class UI extends Application {
 		// show the window
 		
 		Scene loginScene = new Scene(border);
+		File f = new File("application.css");
+		loginScene.getStylesheets().clear();
+		loginScene.getStylesheets().add("file:///" + f.getAbsolutePath().replace("\\", "/"));
+		//DynamicCSS.class.getResource("/jarcss.css").toExternalForm();
+		//loginScene.getStylesheets();
 		// right=loginScene;
 		primaryStage.setScene(loginScene);
 		
@@ -289,7 +297,10 @@ public class UI extends Application {
 		Button btnLog = new Button("Log in / out");
 		menuGrid.getChildren().add(btnLog);
 		// btnLog.setDisable(true);
-		btnLog.setOnAction(evt -> border.setCenter(getLoginPane()));
+		btnLog.setOnAction(evt -> {
+			border.setCenter(getLoginPane());
+		//	border.setLeft(getMenuFlow());
+		});
 
 		Button btn0 = new Button("Add Member");
 		menuGrid.getChildren().add(btn0);
@@ -878,10 +889,10 @@ public class UI extends Application {
 		// TEXTField
 
 		TextField isbnTextField = new TextField();
-		addBookGrid.add(isbnTextField, 2, 1);
+		addBookGrid.add(isbnTextField, 2, 2);
 
 		TextField bookTextField = new TextField();
-		addBookGrid.add(bookTextField, 2, 2);
+		addBookGrid.add(bookTextField, 2, 1);
 
 		TextField nextCopyTextField = new TextField();
 		addBookGrid.add(nextCopyTextField, 2, 3);
@@ -890,6 +901,8 @@ public class UI extends Application {
 		addBookGrid.add(maxLengthTextField, 2, 4);
 
 		Button btnAddBook = new Button("Add");
+		btnAddBook.applyCss();
+		//btnAddBook.css
 		HBox hbBtnAddBook = new HBox(10);
 		hbBtnAddBook.setAlignment(Pos.BOTTOM_RIGHT);
 		hbBtnAddBook.getChildren().add(btnAddBook);
