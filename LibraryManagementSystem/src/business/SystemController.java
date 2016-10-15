@@ -68,23 +68,30 @@ public class SystemController implements ControllerInterface {
 		//DataAccess da = new DataAccessFacade();
 		try{
 		
-		BookCopy bc = b.getNextAvailableCopy();
-		
+		BookCopy bc;
+		try {
+			bc = b.getNextAvailableCopy();
+			//if(bc==null)throw new LibrarySystemException("Book copy not Available");
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			throw new LibrarySystemException("Book Not Available");
+			
+		}
+		if(bc==null)throw new LibrarySystemException("All copies of Book are checked Out");
 		lm.checkOut(bc, LocalDate.now(), b.getMaxCheckoutLength());
 		bc.changeAvailability();
 		
-		
-		}
-		catch (Exception e)
-		{
-			System.out.println(e.getMessage());
-		}
-		finally{
-			System.out.println(""+abc+lm);
+		System.out.println(""+abc+lm);
 		abc.updateMember(lm);
 		System.out.println("something");
 		
 		abc.updateBook(b);
+		
+		}
+		
+		finally{
+			
 		}
 		
 	}

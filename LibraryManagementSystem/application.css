@@ -1,6 +1,6 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
 .root{
-    -fx-font-size: 16pt;
+    -fx-font-size: 12pt;
     -fx-font-family: "Courier New";
     -fx-base: rgb(132, 145, 47);
     -fx-background: rgb(225, 228, 203);
@@ -14,4 +14,22 @@
     -fx-background-insets: 0,1,1;
     -fx-text-fill: black;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 3, 0.0 , 0 , 1 );
+}
+.button:hover{
+-fx-background-color: linear-gradient(#2A5058, #61a2b1);
+}
+.button:click
+{
+-fx-background-color: linear-gradient(#000000, #111111);
+-fx-background-insets: 1,2,2;
+
+}
+.pane{
+
+	-fx-background-color:#696969;
+
+}
+
+.menuflow{
+	-fx-background-color:#696969;
 }

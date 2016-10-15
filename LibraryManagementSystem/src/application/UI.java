@@ -75,7 +75,7 @@ public class UI extends Application {
 	public void start(Stage primaryStage) {
 		// stage is like window
 		primaryStage.setTitle(Title);
-		
+	//	primaryStage.setFullScreen(true);
 
 		// initiate the pane
 		login = getLoginPane();
@@ -88,6 +88,7 @@ public class UI extends Application {
 		// show the window
 		
 		Scene loginScene = new Scene(border);
+		
 		File f = new File("application.css");
 		loginScene.getStylesheets().clear();
 		loginScene.getStylesheets().add("file:///" + f.getAbsolutePath().replace("\\", "/"));
@@ -147,18 +148,31 @@ public class UI extends Application {
 		loginGrid.add(passwordTextField, 2, 4);
 
 		// Event Handler
-
+		//while (true){
 		btnSubmit.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				
 				//while (true)
-				//try {
-				while(auth.equals(Auth.NONE))
-				{	auth = df.login(userIdTextField.getText(), passwordTextField.getText());
+				try {
+
+				{	
+					auth = df.login(userIdTextField.getText(), passwordTextField.getText());
+					if(auth==null)throw new Exception("Hw");
+					//continue;
+					Stage test=(Stage)loginGrid.getScene().getWindow();
+					test.setMaximized(true);
+					border.setCenter(getWelcomeLibrarian("Welcome to the Library Management System "));
+					
+					
+					border.setLeft(getMenuFlow());
+				}
 				 
-					// TODO Auto-generated catch block
-				if(auth.equals(Auth.NONE))
+				}	// TODO Auto-generated catch block
+				catch(Exception e)
+				{
+					
+				
 				{
 					Alert alert = new Alert(AlertType.ERROR);
 					alert.setTitle("Error");
@@ -168,15 +182,14 @@ public class UI extends Application {
 					alert.showAndWait();
 				//	e.printStackTrace();
 				}
+				
+					
 				}
 			//}
 				
 				
 			
-					border.setCenter(getWelcomeLibrarian("Welcome to the Library Management System "));
 					
-			
-				border.setLeft(getMenuFlow());
 
 			}
 
@@ -199,7 +212,7 @@ public class UI extends Application {
 
 	public GridPane getWelcomeLibrarian(String text) {
 		// TODO Auto-generated method stub
-
+		
 		GridPane test = new GridPane();
 		test.setAlignment(Pos.CENTER);
 		test.setHgap(20);
@@ -223,14 +236,11 @@ public class UI extends Application {
 		Label memberIDLable = new Label("Library Member ID:");
 		checkoutGrid.add(memberIDLable, 1, 0);
 
-		Label bookTitleLable = new Label("Book Title:");
+		Label bookTitleLable = new Label("Book ISBN:");
 		checkoutGrid.add(bookTitleLable, 1, 1);
 
-		Label copyNumberLable = new Label("Copy Number:");
-		checkoutGrid.add(copyNumberLable, 1, 2);
-
 		Label informationLable = new Label(
-				"information:if the book is available or if one is a library member  ");
+		"information:if the book is available and if one is a library member  ");
 		checkoutGrid.add(informationLable, 1, 4);
 		informationLable.setTextFill(Color.RED);  
 
@@ -262,10 +272,17 @@ public class UI extends Application {
 
 				try {
 					sc.checkoutBook(memberIDTextField.getText(), bookIsbnField.getText());
+					
 					informationLable.setText("Checkout successfully");
+					
 				} catch (LibrarySystemException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Error");
+					alert.setHeaderText(e.getMessage());
+					alert.setContentText(e.getMessage());
+
+					alert.showAndWait();
 				}
 				
 				//auth = null;
@@ -289,6 +306,8 @@ public class UI extends Application {
 		// TODO Auto-generated method stub
 		// menuGrid=m;
 		FlowPane menuGrid = new FlowPane();
+		menuGrid.getStyleClass().add("menuflow");
+		//menuGrid.applyCss();
 		menuGrid.setVgap(8);
 		menuGrid.setHgap(4);
 		menuGrid.setPrefWrapLength(50);
