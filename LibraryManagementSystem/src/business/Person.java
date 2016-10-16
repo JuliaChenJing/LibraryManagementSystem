@@ -14,6 +14,10 @@ public class Person implements Serializable {
 		telephone = t;
 		address = a;
 	}
+	public Person()
+	{
+		
+	}
 	public String getFirstName() {
 		return firstName;
 	}

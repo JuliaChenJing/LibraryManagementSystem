@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 
+import business.Author;
 import business.Book;
 import business.BookCopy;
 
@@ -54,8 +55,20 @@ public class DataAccessFacade implements DataAccess {
 		libraryMap.put(memId, member);
 		saveToStorage(StorageType.MEMBERS, libraryMap);
 	}
+	public void saveNewAuthor(Author member){
+		HashMap<String, Author> authormap = new HashMap();
+		String memId = member.getTelephone();
+		authormap.put(memId, member);
+		saveToStorage(StorageType.AUTHORS, authormap);
+	}
 		
 	
+	public HashMap<String, Author> readAuthorMap() {
+		// TODO Auto-generated method stub
+		return (HashMap<String, Author>) readFromStorage(StorageType.AUTHORS);
+		//return null;
+	}
+
 	public void updateMember(LibraryMember member) {
 	//	LibraryMember mem =  searchMember(member.getMemberId());
 		HashMap<String, LibraryMember> hmap = readLibraryMap();
@@ -166,6 +179,14 @@ public class DataAccessFacade implements DataAccess {
 		//bc.changeAvailability();
 		hmap.replace(b.getIsbn(), b);
 		saveToStorage(StorageType.BOOKS, hmap);
+	}
+
+	public static void loadAuthorMap(List<Author> allAuthors) {
+		// TODO Auto-generated method stub
+		HashMap<String, Author> map = new HashMap<String, Author>();
+		allAuthors.forEach(lambda -> map.put(lambda.getLastName(), lambda));
+		System.out.println("--_++"+map);
+		saveToStorage(StorageType.AUTHORS, map);
 	}
 		
 }

@@ -19,6 +19,11 @@ public class CheckOutRecords implements Serializable{
 	{
 		this.ce = ce;
 	}
+	public void print() {
+		// TODO Auto-generated method stub
+		System.out.println(ce);
+		
+	}
 	
 
 	

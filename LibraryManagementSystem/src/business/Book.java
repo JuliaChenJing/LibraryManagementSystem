@@ -22,7 +22,8 @@ final public class Book implements Serializable {
 		this.isbn = isbn;
 		this.title = title;
 		this.maxCheckoutLength = maxCheckoutLength;
-		this.authors = Collections.unmodifiableList(authors);
+	//	this.authors = Collections.unmodifiableList(authors);
+		this.authors=authors;
 		copies = new BookCopy[]{new BookCopy(this, 1, true)};
 		
 	}
@@ -113,6 +114,11 @@ final public class Book implements Serializable {
 	}
 	public int getMaxCheckoutLength() {
 		return maxCheckoutLength;
+	}
+
+	public void setAuthors(List<Author> authortemp) {
+		// TODO Auto-generated method stub
+		this.authors=authortemp;
 	}
 
 	

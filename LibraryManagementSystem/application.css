@@ -27,9 +27,12 @@
 .pane{
 
 	-fx-background-color:#696969;
-
+	
 }
 
 .menuflow{
 	-fx-background-color:#696969;
+}
+.border{
+	 -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 3, 0.0 , 0 , 1 );
 }

@@ -80,9 +80,9 @@ public class TestData {
 		td.bookData();
 		td.userData();
 		td.libraryMemberData();
-		
+		//td.authorData();
 		SystemController sc = new SystemController();
-		sc.checkoutBook("123", "23-11451");
+		//sc.checkoutBook("123", "23-11451");
 		System.out.println("-----------------------------------------------");
 		DataAccess da = new DataAccessFacade();
 		
@@ -98,6 +98,7 @@ public class TestData {
 		System.out.println("--- for update of Asutosh -");
 		
 		da.updateMember(libraryMembers.get(1));
+		
 	}
 	///create books
 	public void bookData() {
@@ -113,6 +114,8 @@ public class TestData {
 	public void userData() {
 		DataAccessFacade.loadUserMap(allUsers);
 	}
+	
+	
 	
 	public void checkoutRecordData() {
 //		allRecords.get(0).addEntry(allEntries.get(0));
