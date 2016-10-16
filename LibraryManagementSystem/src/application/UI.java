@@ -57,10 +57,10 @@ public class UI extends Application {
 
 	DataAccessFacade df  = new DataAccessFacade();
 	DataAccessFacade lm=new DataAccessFacade();
-	
+	ArrayList<Author> bookauthors=new ArrayList<>();
 	SystemController sc = new SystemController();
 	
-	String Title = "LMS";
+	String Title = "Library Management System";
 	// master pane,show the border of the window
 	BorderPane border = new BorderPane();
 
@@ -269,7 +269,20 @@ public class UI extends Application {
 		hbBtnAddCopy.setAlignment(Pos.BOTTOM_RIGHT);
 		hbBtnAddCopy.getChildren().add(btnCheckCopyStatus);
 		checkoutGrid.add(hbBtnAddCopy, 2, 3);
-		btnCheckCopyStatus.setOnAction(evt->memberCheckoutDetails(memberIDTextField.getText()));
+		btnCheckCopyStatus.setOnAction(evt->{
+		
+			if(memberIDTextField.getText().equals(""))
+			{
+				Alert a =new Alert(AlertType.ERROR, "Member ID cannot be null", ButtonType.CLOSE);
+				a.show();
+			}
+			else
+			memberCheckoutDetails(memberIDTextField.getText());
+		
+		
+				
+		});
+		
 		
 		Button btnBorrow = new Button("Borrow");
 		HBox hbBtnBorrow = new HBox(10);
@@ -357,7 +370,7 @@ public class UI extends Application {
 		// menuGrid.add(hbBtn3, 0, 4);
 		menuGrid.getChildren().add(btn3);
 		btn3.setDisable(true);
-		btn3.setOnAction(evt -> border.setCenter(getAddBookPane()));
+		btn3.setOnAction(evt -> border.setCenter(getAddBookPanenew()));
 
 		Button btn4 = new Button("Add a Copy");
 		// HBox hbBtn4 = new HBox(10);
@@ -379,17 +392,7 @@ public class UI extends Application {
 		btn5.setOnAction(evt -> border.setCenter(getCheckCopyStatusPane()));
 
 		// };
-		Button btn6 = new Button("Reset UI");
-		// HBox hbBtn5 = new HBox(10);
-		// hbBtn5.setAlignment(Pos.BOTTOM_RIGHT);
-		// hbBtn5.getChildren().add(btn5);
-		// menuGrid.add(hbBtn5, 0, 6);
-		menuGrid.getChildren().add(btn6);
-		btn6.setDisable(false);
-		// return menuGrid;
-		//GridPane blank=new GridPane();
-		btn6.setOnAction(evt -> border.setBottom(getBlankPane()));
-
+		
 		// };
 		switch (auth) {
 		
@@ -508,7 +511,7 @@ public class UI extends Application {
 		
 		Label memidLabel=new Label("Member ID:");
 		addGrid.add(memidLabel, 1, 0);
-		TextField memId = new TextField(" ");
+		TextField memId = new TextField();
 		addGrid.add(memId, 2, 0);
 
 		// Button
@@ -525,7 +528,7 @@ public class UI extends Application {
 			public void handle(ActionEvent event) {
 				// do something if the button is clicked
 				
-				if(memId.getText()==" ")
+				if(memId.getText().equals(""))
 				{
 					Alert a =new Alert(AlertType.ERROR, "Member ID cannot be null", ButtonType.CLOSE);
 					a.show();
@@ -628,6 +631,12 @@ public class UI extends Application {
 				@Override
 				public void handle(ActionEvent event) {
 				
+					if(idTextField.getText().equals(""))
+					{
+						Alert a =new Alert(AlertType.ERROR, "Member ID cannot be null", ButtonType.CLOSE);
+						a.show();
+					}
+					else
 					memberCheckoutDetails(idTextField.getText());
 					
 				
@@ -673,6 +682,12 @@ public class UI extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				// do something if the button is clicked
+				if(idTextField.getText().equals(""))
+				{
+					Alert a =new Alert(AlertType.ERROR, "Member ID cannot be null", ButtonType.CLOSE);
+					a.show();
+				}
+				else{
 				LibraryMember lm = df.searchMember(idTextField.getText());
 				System.out.println("ccheck"+lm);
 				idTextField.setText(lm.getMemberId());
@@ -685,6 +700,7 @@ public class UI extends Application {
 				cityTextField.setText(lm.getAddress().getCity());
 				btnUpdate.setDisable(false);
 				idTextField.setEditable(false);
+				}
 				
 			//informationLable.setText("library member added successfully");
 			}
@@ -831,227 +847,12 @@ public class UI extends Application {
 	        dueDate.set(fName);  
 	    }  
 	   
-//	    public TableView getLibraryMemberTable() {
-//			TableView table = new TableView();
-//			table.setEditable(true);
-//
-//			TableColumn nameCol = new TableColumn("Name");
-//			TableColumn memberIDCol = new TableColumn("member ID");
-//			TableColumn bookCol = new TableColumn("Book");
-//			TableColumn dueDateCol = new TableColumn("Due Date");
-//			TableColumn isOverdueCol = new TableColumn("Is Overdue?");
-//
-//			table.getColumns().addAll(nameCol, memberIDCol, bookCol,dueDateCol,isOverdueCol);
-//			return table;
-//		}
+
 
 }
 
-	public GridPane getAddBookPane() {
-		GridPane addBookGrid = new GridPane();
-		addBookGrid.setAlignment(Pos.CENTER);
-		addBookGrid.setHgap(20);
-		addBookGrid.setVgap(20);
-		addBookGrid.setPadding(new Insets(25, 25, 25, 25));
+//	
 
-		// LALBLE
-
-		Label bookTitleLable = new Label("Book Title:");
-		addBookGrid.add(bookTitleLable, 1, 1);
-
-		Label isbnLable = new Label("ISBN:");
-		addBookGrid.add(isbnLable, 1, 2);
-
-		Label Maxcheckoutlength = new Label("Maximum Checkout Length");
-		addBookGrid.add(Maxcheckoutlength, 1, 3);
-
-		Label numberOfCopies = new Label("Number of copies");
-		addBookGrid.add(numberOfCopies, 1, 4);
-
-		// TEXTField
-
-		TextField bookTextField = new TextField();
-		addBookGrid.add(bookTextField, 2, 1);
-
-		TextField isbnTextField = new TextField();
-		addBookGrid.add(isbnTextField, 2, 2);
-
-		
-		TextField MaxcheckoutlengthTextField = new TextField();
-		addBookGrid.add(MaxcheckoutlengthTextField, 2, 3);
-
-		TextField numberOfCopiesTextField = new TextField();
-		addBookGrid.add(numberOfCopiesTextField, 2, 4);
-
-		Label bookauthorLabel=new Label("Book Authors:");
-		addBookGrid.add(bookauthorLabel, 1, 5);
-		Label bookauthorLabel1=new Label("");
-		addBookGrid.add(bookauthorLabel1, 2, 5);
-		
-		List<Author> bookauthors=new ArrayList<>();
-		
-		Button btnAddBook = new Button("Add Book");
-		btnAddBook.applyCss();
-		//btnAddBook.css
-		HBox hbBtnAddBook = new HBox(10);
-		hbBtnAddBook.setAlignment(Pos.BOTTOM_RIGHT);
-		hbBtnAddBook.getChildren().add(btnAddBook);
-		addBookGrid.add(hbBtnAddBook, 2, 8);
-		
-
-		btnAddBook.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				
-				try {
-				df.saveNewBook(new Book(isbnTextField.getText(), bookTextField.getText(),7, bookauthors));	
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				
-			//informationLable.setText("library member added successfully");
-			}
-
-		});
-		Button btnAddAuthor = new Button("Add Authors");
-		btnAddAuthor.applyCss();
-		//btnAddBook.css
-		HBox hbBtnAddAuthor = new HBox(10);
-		hbBtnAddAuthor.setAlignment(Pos.BOTTOM_RIGHT);
-		hbBtnAddAuthor.getChildren().add(btnAddAuthor);
-		addBookGrid.add(hbBtnAddAuthor, 2, 9);
-		
-		btnAddAuthor.setOnAction(evt->
-		{
-		getauthor(isbnTextField.getText());
-		//refresh();
-		String name="";//=bookauthorLabel1.getText();
-		for(int i=0;i<df.readBooksMap().get(isbnTextField.getText()).getAuthors().size();i++)
-		name=name.concat(df.readBooksMap().get(isbnTextField.getText()).getAuthors().get(i).getFirstName());
-		System.out.println(name);
-		//System.out.println(".................................................");
-		System.out.println(df.readBooksMap().get(isbnTextField.getText()).getAuthors().toString());
-
-		bookauthorLabel1.setText("mero");
-		});
-		
-//		HashMap<String,Author> test =df.readAuthorMap();
-//		Author abcd=new Author();
-//		
-//		for (Entry<String, Author> entry : test.entrySet()) {
-//		   // String key = entry.getKey();
-//		    Author value = entry.getValue();
-//		    // you code here
-//		    abcd=value;
-//		    	}
-//		bookauthors.add(abcd);
-		//bookauthorLabel1.setText(bookauthorLabel1.getText()+abcd.getFirstName());
-		
-		
-		
-		
-		return addBookGrid;
-			
-	}
-
-	public  void getauthor(String isbn) {
-		// TODO Auto-generated method stub
-		Stage authorstage =new Stage();
-		BorderPane authorPane=new BorderPane();
-		Scene authorscene=new Scene(authorPane);
-		authorstage.setScene(authorscene);
-		authorstage.show();
-		
-		GridPane addGrid=new GridPane();
-		authorPane.setCenter(addGrid);
-		Label firstnameLable = new Label("First Name:");
-		addGrid.add(firstnameLable, 1, 1);
-
-		Label lastnameLable = new Label("Last Name:");
-		addGrid.add(lastnameLable, 1, 2);
-
-		Label streetLable = new Label("Street:");
-		addGrid.add(streetLable, 1, 3);
-
-		Label cityLable = new Label("City:");
-		addGrid.add(cityLable, 1, 4);
-
-		Label stateLable = new Label("State:");
-		addGrid.add(stateLable, 1, 5);
-
-		Label zipLable = new Label("Zip:");
-		addGrid.add(zipLable, 1, 6);
-
-		Label cellLable = new Label("Phone Number:");
-		addGrid.add(cellLable, 1, 7);
-		Label credentials=new Label("Credentials");
-		addGrid.add(credentials, 1, 8);
-		Label bio=new Label("Bio:");
-		addGrid.add(bio, 1, 9);
-
-		Label informationLable = new Label("information needed to show:");
-		//addGrid.add(informationLable, 1, 9);
-		informationLable.setTextFill(Color.RED);  
-		
-		// TEXTField
-
-		TextField firstnameTextField = new TextField();
-		addGrid.add(firstnameTextField, 2, 1);
-
-		TextField lastnameTextField = new TextField();
-		addGrid.add(lastnameTextField, 2, 2);
-
-		TextField streetTextField = new TextField();
-		addGrid.add(streetTextField, 2, 3);
-
-		TextField cityTextField = new TextField();
-		addGrid.add(cityTextField, 2, 4);
-
-		TextField stateTextField = new TextField();
-		addGrid.add(stateTextField, 2, 5);
-
-		TextField zipTextField = new TextField();
-		addGrid.add(zipTextField, 2, 6);
-
-		TextField cellTextField = new TextField();
-		addGrid.add(cellTextField, 2, 7);
-		
-		TextField credentialField=new TextField();
-		addGrid.add(credentialField, 2, 8);
-		TextArea bioArea=new TextArea();
-		addGrid.add(bioArea, 2, 9);
-		
-		Button submit=new Button("Submit");
-		HBox hbsubmit=new HBox();
-		hbsubmit.setAlignment(Pos.BOTTOM_RIGHT);
-		hbsubmit.getChildren().add(submit);
-		addGrid.add(hbsubmit, 2, 12);
-		//Author author =new Author();
-		submit.setOnAction(
-				evt->{
-					Address a=new Address(streetTextField.getText(), cityTextField.getText(), stateTextField.getText(), zipTextField.getText());
-					Author newauthor=new Author(firstnameTextField.getText(), lastnameTextField.getText(), cellTextField.getText(), a, bio.getText(),credentialField.getText());
-					HashMap<String,Book> test=df.readBooksMap();
-					Book b=test.get(isbn);
-					System.out.println(b);
-					
-					List<Author> authortemp=new ArrayList<>();
-					authortemp.addAll(b.getAuthors());
-					authortemp.add(newauthor);
-					b.setAuthors(authortemp);
-					df.updateBook(b);
-					//test.put(isbn, b);
-					authorstage.close();	
-		
-				});
-		//return author;
-		//return provideauthor(author);
-		
-		//return author;
-		}
  
 
 	public GridPane getAddCopyPane() {
@@ -1063,19 +864,23 @@ public class UI extends Application {
 
 		// LALBLE
 
-		Label bookTitleLable = new Label("Book Title:");
-		addCopyGrid.add(bookTitleLable, 0, 0);
-		Label bookTitle=new Label ("");
-		addCopyGrid.add(bookTitle, 0, 1);
+		
+		
 		Label isbnLable = new Label("ISBN:");
-		addCopyGrid.add(isbnLable, 1, 2);
+		addCopyGrid.add(isbnLable, 1, 1);
+		Label numbook=new Label("No of Books");
+		addCopyGrid.add(numbook, 2, 1);
+		Label bookTitle=new Label ("");
+		addCopyGrid.add(bookTitle, 1, 5);
+		
 
 		// TEXTField
 
 		TextField IsbnTextField = new TextField();
-		addCopyGrid.add(IsbnTextField, 2, 2);
+		addCopyGrid.add(IsbnTextField, 1, 2);
 
-		
+		TextField numberField = new TextField();
+		addCopyGrid.add(numberField, 2,2 );
 
 		Button btnAddCopy = new Button("Add");
 		HBox hbBtnAddCopy = new HBox(10);
@@ -1097,11 +902,11 @@ public class UI extends Application {
 					try {
 						
 						b = df.searchBook(IsbnTextField.getText());
-						bookTitle.setText(b.getTitle()+"Added successfully");
+						bookTitle.setText(numberField.getText()+"copies of "+b.getTitle()+" Added successfully");
 					
 				
 				
-				
+				for(int i=0;i<Integer.valueOf(numberField.getText());i++)
 					b.addCopy();
 				df.updateBook(b);	
 				} catch (Exception e) {
@@ -1364,6 +1169,244 @@ public class UI extends Application {
 		detail.setScene(detailScene);
 		detail.show();
 	}
+	
+	public GridPane getAddBookPanenew() {
+		GridPane addBookGrid = new GridPane();
+		addBookGrid.setAlignment(Pos.CENTER);
+		addBookGrid.setHgap(20);
+		addBookGrid.setVgap(20);
+		addBookGrid.setPadding(new Insets(25, 25, 25, 25));
+
+		// LALBLE
+
+		Label bookTitleLable = new Label("Book Title:");
+		addBookGrid.add(bookTitleLable, 1, 1);
+
+		Label isbnLable = new Label("ISBN:");
+		addBookGrid.add(isbnLable, 1, 2);
+
+		Label Maxcheckoutlength = new Label("Maximum Checkout Length");
+		addBookGrid.add(Maxcheckoutlength, 1, 3);
+
+		Label numberOfCopies = new Label("Number of copies");
+		addBookGrid.add(numberOfCopies, 1, 4);
+
+		// TEXTField
+
+		TextField bookTextField = new TextField();
+		addBookGrid.add(bookTextField, 2, 1);
+
+		TextField isbnTextField = new TextField();
+		addBookGrid.add(isbnTextField, 2, 2);
+
+		
+		TextField MaxcheckoutlengthTextField = new TextField();
+		addBookGrid.add(MaxcheckoutlengthTextField, 2, 3);
+
+		TextField numberOfCopiesTextField = new TextField();
+		addBookGrid.add(numberOfCopiesTextField, 2, 4);
+
+		Label bookauthorLabel=new Label("Book Authors:");
+		addBookGrid.add(bookauthorLabel, 1, 5);
+		Label bookauthorLabel1=new Label("");
+		addBookGrid.add(bookauthorLabel1, 2, 5);
+		
+		
+		//bookauthors.add(null);
+		Button btnAddBook = new Button("Add Book");
+		btnAddBook.applyCss();
+		//btnAddBook.css
+		HBox hbBtnAddBook = new HBox(10);
+		hbBtnAddBook.setAlignment(Pos.BOTTOM_RIGHT);
+		hbBtnAddBook.getChildren().add(btnAddBook);
+		addBookGrid.add(hbBtnAddBook, 2, 8);
+		btnAddBook.setDisable(true);
+		
+		Button btnAddAuthor = new Button("Add Authors");
+		btnAddAuthor.applyCss();
+		Label informationLable=new Label("");
+		addBookGrid.add(informationLable, 0, 5);
+		//btnAddBook.css
+		HBox hbBtnAddAuthor = new HBox(10);
+		hbBtnAddAuthor.setAlignment(Pos.BOTTOM_RIGHT);
+		hbBtnAddAuthor.getChildren().add(btnAddAuthor);
+		addBookGrid.add(hbBtnAddAuthor, 2, 9);
+		ArrayList<Author> list=new ArrayList<>();
+		System.out.println("Book authors"+bookauthors);
+		
+		btnAddAuthor.setOnAction(evt->
+		{
+			if(isbnTextField.getText().equals(""))
+			{
+				Alert a =new Alert(AlertType.ERROR, "Book ISBN cannot be null", ButtonType.CLOSE);
+				a.showAndWait();
+			}
+				
+			String namelabel="";
+		getauthornew();
+		
+		Iterator it=bookauthors.iterator();
+		
+		while(it.hasNext())
+		{
+			Author temp=(Author)it.next();
+			System.out.println(temp.getFirstName());
+			namelabel=namelabel.concat(temp.getFirstName());
+		}
+		
+		bookauthorLabel1.setText(namelabel);
+	btnAddBook.setDisable(false);
+		
+		//refresh();
+//		String name="";//=bookauthorLabel1.getText();
+//		for(int i=0;i<df.readBooksMap().get(isbnTextField.getText()).getAuthors().size();i++)
+//		name=name.concat(df.readBooksMap().get(isbnTextField.getText()).getAuthors().get(i).getFirstName());
+//		System.out.println(name);
+//		//System.out.println(".................................................");
+//		System.out.println(df.readBooksMap().get(isbnTextField.getText()).getAuthors().toString());
+
+		//bookauthorLabel1.setText(df.readBooksMap().get(isbnTextField.getText()).getAuthors().toString());
+		});
+		
+//		HashMap<String,Author> test =df.readAuthorMap();
+//		Author abcd=new Author();
+//		
+//		for (Entry<String, Author> entry : test.entrySet()) {
+//		   // String key = entry.getKey();
+//		    Author value = entry.getValue();
+//		    // you code here
+//		    abcd=value;
+//		    	}
+//		bookauthors.add(abcd);
+		//bookauthorLabel1.setText(bookauthorLabel1.getText()+abcd.getFirstName());
+		
+		
+		
+		
+		
+
+		btnAddBook.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				
+				try {
+				df.saveNewBook(new Book(isbnTextField.getText(), bookTextField.getText(),Integer.valueOf(MaxcheckoutlengthTextField.getText()), bookauthors));	
+				informationLable.setText("library member added successfully");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+			//informationLable.setText("library member added successfully");
+			}
+
+		});
+		
+		
+		return addBookGrid;
+			
+	}
+
+	public  void getauthornew() {
+		// TODO Auto-generated method stub
+		Stage authorstage =new Stage();
+		BorderPane authorPane=new BorderPane();
+		Scene authorscene=new Scene(authorPane);
+		authorstage.setScene(authorscene);
+		
+		
+		GridPane addGrid=new GridPane();
+		authorPane.setCenter(addGrid);
+		Label firstnameLable = new Label("First Name:");
+		addGrid.add(firstnameLable, 1, 1);
+
+		Label lastnameLable = new Label("Last Name:");
+		addGrid.add(lastnameLable, 1, 2);
+
+		Label streetLable = new Label("Street:");
+		addGrid.add(streetLable, 1, 3);
+
+		Label cityLable = new Label("City:");
+		addGrid.add(cityLable, 1, 4);
+
+		Label stateLable = new Label("State:");
+		addGrid.add(stateLable, 1, 5);
+
+		Label zipLable = new Label("Zip:");
+		addGrid.add(zipLable, 1, 6);
+
+		Label cellLable = new Label("Phone Number:");
+		addGrid.add(cellLable, 1, 7);
+		Label credentials=new Label("Credentials");
+		addGrid.add(credentials, 1, 8);
+		Label bio=new Label("Bio:");
+		addGrid.add(bio, 1, 9);
+
+		Label informationLable = new Label("information needed to show:");
+		//addGrid.add(informationLable, 1, 9);
+		informationLable.setTextFill(Color.RED);  
+		
+		// TEXTField
+
+		TextField firstnameTextField = new TextField();
+		addGrid.add(firstnameTextField, 2, 1);
+
+		TextField lastnameTextField = new TextField();
+		addGrid.add(lastnameTextField, 2, 2);
+
+		TextField streetTextField = new TextField();
+		addGrid.add(streetTextField, 2, 3);
+
+		TextField cityTextField = new TextField();
+		addGrid.add(cityTextField, 2, 4);
+
+		TextField stateTextField = new TextField();
+		addGrid.add(stateTextField, 2, 5);
+
+		TextField zipTextField = new TextField();
+		addGrid.add(zipTextField, 2, 6);
+
+		TextField cellTextField = new TextField();
+		addGrid.add(cellTextField, 2, 7);
+		
+		TextField credentialField=new TextField();
+		addGrid.add(credentialField, 2, 8);
+		TextArea bioArea=new TextArea();
+		addGrid.add(bioArea, 2, 9);
+		
+		Button submit=new Button("Submit");
+		HBox hbsubmit=new HBox();
+		hbsubmit.setAlignment(Pos.BOTTOM_RIGHT);
+		hbsubmit.getChildren().add(submit);
+		addGrid.add(hbsubmit, 2, 12);
+		//Author author =new Author();
+		submit.setOnAction(
+				evt->{
+					Address a=new Address(streetTextField.getText(), cityTextField.getText(), stateTextField.getText(), zipTextField.getText());
+					Author newauthor=new Author(firstnameTextField.getText(), lastnameTextField.getText(), cellTextField.getText(), a, bio.getText(),credentialField.getText());
+					//HashMap<String,Book> test=df.readBooksMap();
+					//Book b=test.get(isbn);
+					//System.out.println(b);
+					
+					//List<Author> authortemp=new ArrayList<>();
+					//list.addAll(b.getAuthors());
+					bookauthors.add(newauthor);
+					//b.setAuthors(authortemp);
+					//df.updateBook(b);
+					//test.put(isbn, b);
+					System.out.println("List"+bookauthors);
+					//authors.setText(authors.getText()+newauthor.getFirstName()+"\n");
+					authorstage.close();	
+		
+				});
+		authorstage.showAndWait();
+		//return author;
+		//return provideauthor(author);
+		
+		//return author;
+		}
 	
 
 }
