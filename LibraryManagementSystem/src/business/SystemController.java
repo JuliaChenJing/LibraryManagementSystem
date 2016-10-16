@@ -9,6 +9,8 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessFacade;
 import dataaccess.LibraryMember;
 import dataaccess.User;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 public class SystemController implements ControllerInterface {
 	/**
@@ -60,40 +62,49 @@ public class SystemController implements ControllerInterface {
 		// TODO Auto-generated method stub
 		Book b;
 		LibraryMember lm;
-		lm = abc.searchMember(memberId);
+		try {
+			lm = abc.searchMember(memberId);
+		
 		System.out.println(lm);
 		b = searchBook(isbn);
 		
 		
 		//DataAccess da = new DataAccessFacade();
-		try{
 		
 		BookCopy bc;
 		try {
 			bc = b.getNextAvailableCopy();
 			//if(bc==null)throw new LibrarySystemException("Book copy not Available");
+			if(bc==null)throw new LibrarySystemException("All copies of Book are checked Out");
+			lm.checkOut(bc, LocalDate.now(), b.getMaxCheckoutLength());
+			bc.changeAvailability();
+			
+			System.out.println(""+abc+lm);
+			abc.updateMember(lm);
+			System.out.println("something");
+			
+			abc.updateBook(b);
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			throw new LibrarySystemException("Book Not Available");
 			
 		}
-		if(bc==null)throw new LibrarySystemException("All copies of Book are checked Out");
-		lm.checkOut(bc, LocalDate.now(), b.getMaxCheckoutLength());
-		bc.changeAvailability();
 		
-		System.out.println(""+abc+lm);
-		abc.updateMember(lm);
-		System.out.println("something");
 		
-		abc.updateBook(b);
-		
-		}
-		
-		finally{
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			throw new LibrarySystemException("Invalid Member ID");
 			
 		}
 		
-	}
+		
+		
+		}
+		
+		
+		
+		
+	
 	
 }

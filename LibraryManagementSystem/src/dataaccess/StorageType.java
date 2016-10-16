@@ -1,5 +1,5 @@
 package dataaccess;
 
 public enum StorageType {
-	BOOKS, MEMBERS, USERS, AUTHORS;
+	BOOKS, MEMBERS, USERS,AUTHORS;
 }

@@ -22,6 +22,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -83,6 +85,8 @@ public class UI extends Application {
 		primaryStage.setTitle(Title);
 	//	primaryStage.setFullScreen(true);
 
+		
+		
 		// initiate the pane
 		login = getLoginPane();
 		menu = getMenuFlow();
@@ -177,7 +181,7 @@ public class UI extends Application {
 				 
 				}	// TODO Auto-generated catch block
 				catch(Exception e)
-				{
+				
 					
 				
 				{
@@ -187,11 +191,11 @@ public class UI extends Application {
 					alert.setContentText("Write your username and Password Correctly");
 
 					alert.showAndWait();
-				//	e.printStackTrace();
+					e.printStackTrace();
 				}
 				
 					
-				}
+				
 			//}
 				
 				
@@ -223,12 +227,25 @@ public class UI extends Application {
 		
 		
 		GridPane test = new GridPane();
-		test.setAlignment(Pos.CENTER);
+		test.getStyleClass().add("welcome");
+		File file = new File("src/lms.jpg");
+		Image image=new Image(file.toURI().toString());
+		ImageView iv1=new ImageView();
+		iv1.setImage(image);
+		
+		HBox box=new HBox();
+		
+		box.setPadding(new Insets(10,10,10,10));
+		box.getChildren().add(iv1);
+		box.setAlignment(Pos.TOP_CENTER);
+		//test.setAlignment(Pos.CENTER);
 		test.setHgap(20);
 		test.setVgap(20);
 		test.setPadding(new Insets(25, 25, 25, 25));
 		Label Wel = new Label(text);
-		test.getChildren().add(Wel);
+		test.add(Wel,0,2);
+		test.add(box, 0, 0);
+		//test.getChildren().add(box);
 		return test;
 
 	}
@@ -293,6 +310,28 @@ public class UI extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 
+				
+				if(memberIDTextField.getText().equals(""))
+				{
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setTitle("Error");
+					//alert.setHeaderText(e.getMessage());
+					alert.setContentText("Member ID text Field cannot be blank");
+
+					alert.showAndWait();
+					}
+				else {
+					if(bookIsbnField.getText().equals(""))
+					{
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setTitle("Error");
+						//alert.setHeaderText(e.getMessage());
+						alert.setContentText("Book ISBN Field cannot be blank");
+
+						alert.showAndWait();
+						}
+				
+				else{
 				try {
 					sc.checkoutBook(memberIDTextField.getText(), bookIsbnField.getText());
 					
@@ -308,7 +347,8 @@ public class UI extends Application {
 
 					alert.showAndWait();
 				}
-				
+				}
+				}
 				//auth = null;
 
 				border.setLeft(getMenuFlow());
@@ -341,6 +381,7 @@ public class UI extends Application {
 		menuGrid.getChildren().add(btnLog);
 		// btnLog.setDisable(true);
 		btnLog.setOnAction(evt -> {
+			auth=Auth.NONE;
 			border.setCenter(getLoginPane());
 		//	border.setLeft(getMenuFlow());
 		});
@@ -445,12 +486,7 @@ public class UI extends Application {
 		return menuGrid;
 	}
 
-	private GridPane getBlankPane() {
-		// TODO Auto-generated method stub
-		GridPane blank = new GridPane();
-		return blank;
-		
-	}
+	
 
 	public GridPane getAddMemberPane() {
 		GridPane addGrid = new GridPane();
@@ -896,13 +932,22 @@ public class UI extends Application {
 				//Address a = new Address(streetTextField.getText(), cityTextField.getText(), stateTextField.getText(), zipTextField.getText());
 				//String m = 
 				
+				try{
+					
+				Integer.parseInt(numberField.getText());
 				
+					
 				Book b;
 					
 					try {
 						
+						if(IsbnTextField.getText().equals(""))
+						{
+							Alert a =new Alert(AlertType.ERROR, "Book ISBN field cannot be null", ButtonType.CLOSE);
+							a.show();
+						}
 						b = df.searchBook(IsbnTextField.getText());
-						bookTitle.setText(numberField.getText()+"copies of "+b.getTitle()+" Added successfully");
+						
 					
 				
 				
@@ -911,13 +956,22 @@ public class UI extends Application {
 				df.updateBook(b);	
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					
+						Alert a =new Alert(AlertType.ERROR, "Book not found in Database Please enter new book", ButtonType.CLOSE);
+						a.show();
+					
 				}
 				
-				
+					bookTitle.setText(numberField.getText()+"copies of "+IsbnTextField.getText()+" Added successfully");
 			//informationLable.setText("library member added successfully");
 			}
-
+			
+			catch(Exception e)
+			{
+				Alert a =new Alert(AlertType.ERROR, "Number of Book Copies must be Integer", ButtonType.CLOSE);
+				a.show();
+			}
+			}
 		});
 
 		return addCopyGrid;
@@ -950,7 +1004,10 @@ public class UI extends Application {
 		hbBtnAddCopy.getChildren().add(btnAddCopy);
 		checkCopyStatusGrid.add(hbBtnAddCopy, 2, 4);
 		btnAddCopy.setOnAction(evt->{
-			Book book=df.readBooksMap().get(bookIsbnTextField.getText());
+			Book book;
+			try {
+				book = df.readBooksMap().get(bookIsbnTextField.getText());
+			
 			String isbn=book.getIsbn();
 			BookCopy[] copy=book.getCopies();
 			int count=book.getCopyNums().size();
@@ -980,6 +1037,16 @@ public class UI extends Application {
 				
 			
 			bookCheckoutDetails(book,jpt,countavailable);
+			
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Error");
+				alert.setHeaderText("Book not Found in database");
+				alert.setContentText("Write your Book ISBN correctly");
+						alert.showAndWait();
+			}
 			
 		});
 
@@ -1225,7 +1292,7 @@ public class UI extends Application {
 		Button btnAddAuthor = new Button("Add Authors");
 		btnAddAuthor.applyCss();
 		Label informationLable=new Label("");
-		addBookGrid.add(informationLable, 0, 5);
+		addBookGrid.add(informationLable, 1, 10);
 		//btnAddBook.css
 		HBox hbBtnAddAuthor = new HBox(10);
 		hbBtnAddAuthor.setAlignment(Pos.BOTTOM_RIGHT);
@@ -1240,7 +1307,27 @@ public class UI extends Application {
 			{
 				Alert a =new Alert(AlertType.ERROR, "Book ISBN cannot be null", ButtonType.CLOSE);
 				a.showAndWait();
+				return;
 			}
+			try {
+				Integer.parseInt(MaxcheckoutlengthTextField.getText());
+			}
+			catch(Exception e)
+			{
+				Alert a =new Alert(AlertType.ERROR, "Checkout length must be integer", ButtonType.CLOSE);
+				a.showAndWait();
+				return;
+			}
+			try {
+				Integer.parseInt(numberOfCopiesTextField.getText());
+			}
+			catch(Exception e)
+			{
+				Alert a =new Alert(AlertType.ERROR, "Number of Copies must be integer", ButtonType.CLOSE);
+				a.showAndWait();
+				return;
+			}
+			
 				
 			String namelabel="";
 		getauthornew();
@@ -1290,12 +1377,19 @@ public class UI extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				
+				if(isbnTextField.getText().equals(""))
+				{
+					Alert a =new Alert(AlertType.ERROR, "Book ISbn must not be blank", ButtonType.CLOSE);
+					a.showAndWait();
+					return;
+				}
 				try {
 				df.saveNewBook(new Book(isbnTextField.getText(), bookTextField.getText(),Integer.valueOf(MaxcheckoutlengthTextField.getText()), bookauthors));	
-				informationLable.setText("library member added successfully");
+				informationLable.setText("Book added successfully");
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Alert a =new Alert(AlertType.ERROR, "Something Happened with dataaccess try again", ButtonType.CLOSE);
+				a.showAndWait();
 				}
 				
 				
