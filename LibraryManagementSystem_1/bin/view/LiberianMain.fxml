@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="800" prefWidth="1000" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CheckoutController">
+   <children>
+      <VBox layoutX="-88.0" layoutY="-78.0" prefHeight="98.0" prefWidth="153.0" />
+      <Button layoutX="457.0" layoutY="273.0" maxWidth="-Infinity" mnemonicParsing="false" prefHeight="65.0" prefWidth="145.0" text="Check In" />
+      <Button onAction="#openCheckout" layoutX="457.0" layoutY="409.0" maxWidth="-Infinity" mnemonicParsing="false" prefHeight="59.0" prefWidth="145.0" text="Check Out" />
+   </children>
+</AnchorPane>

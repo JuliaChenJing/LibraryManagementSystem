@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="188.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MemberController">
+   <children>
+      <Label layoutX="31.0" layoutY="14.0" text="Successfully Member Added!">
+         <font>
+            <Font name="System Bold Italic" size="27.0" />
+         </font>
+         <textFill>
+            <LinearGradient endY="0.43203883495145634" startX="0.029126213592232997" startY="1.0">
+               <stops>
+                  <Stop color="#bc1414" />
+                  <Stop color="WHITE" offset="1.0" />
+               </stops>
+            </LinearGradient>
+         </textFill>
+      </Label>
+      <Button fx:id="btnThankYou" layoutX="98.0" layoutY="70.0" onAction="#AddedDone" mnemonicParsing="false" prefHeight="65.0" prefWidth="235.0" text="Thank You !">
+         <textFill>
+            <LinearGradient endX="1.0" endY="0.43203883495145634" startX="0.029126213592232997" startY="1.0">
+               <stops>
+                  <Stop color="BLACK" />
+                  <Stop color="#ab7676" offset="1.0" />
+               </stops>
+            </LinearGradient>
+         </textFill>
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>
