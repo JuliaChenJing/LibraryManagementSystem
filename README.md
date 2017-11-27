@@ -8,6 +8,8 @@
 
 ## 2. To run	:
 * Check the build path. 
+* Run the dataaccess.TestData.java
+* Run application.UI.java
 * JavaFX, MVC, and Façade were utilized in this project.
 -----
 ## 3. Requirements	:
