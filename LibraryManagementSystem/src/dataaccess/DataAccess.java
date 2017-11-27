@@ -3,7 +3,6 @@ package dataaccess;
 import java.util.HashMap;
 
 import business.Book;
-import business.BookCopy;
 
 public interface DataAccess {
 	public LibraryMember searchMember(String memberId);
