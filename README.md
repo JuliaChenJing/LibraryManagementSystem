@@ -10,6 +10,7 @@
 * Check the build path. 
 * Run the dataaccess.TestData.java
 * Run application.UI.java
+* There are 3 type of roles: admin, librarian and both.
 * JavaFX, MVC, and Façade were utilized in this project.
 -----
 ## 3. Requirements	:
