@@ -33,8 +33,10 @@ necessary to fulfill the needs of the event-handlers; the SystemController will 
 3. Use your sequence diagrams to help identify operations in your classes, and add these to your  class diagram.
 ------------------------------------------    
 4. Design the user interface. 
-         a. Spend time thinking about a good way to organize the look of the UI, given the use cases  that need to be supported. Can everything be done on a single screen? Should you use a menu? Aim to make it possible for the user to accomplish each use case with as few  steps as possible. Plan to use a TableView to display (read-only) checkout records. (See the sample code in the package lesson6.lecture.javafx.tables.) Draw  by hand sketches of the screens you decide to use.
-        b. Code the UI based on your sketches either by directly writing the code or by using
+     
+     a. Spend time thinking about a good way to organize the look of the UI, given the use cases  that need to be supported. Can everything be done on a single screen? Should you use a menu? Aim to make it possible for the user to accomplish each use case with as few  steps as possible. Plan to use a TableView to display (read-only) checkout records. (See the sample code in the package lesson6.lecture.javafx.tables.) Draw  by hand sketches of the screens you decide to use.
+    
+     b. Code the UI based on your sketches either by directly writing the code or by using
 SceneBuilder.
 ----------------------------------------- 
 
