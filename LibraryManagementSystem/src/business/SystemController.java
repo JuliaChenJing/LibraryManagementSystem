@@ -10,7 +10,14 @@ import dataaccess.LibraryMember;
 import dataaccess.User;
 
 public class SystemController implements ControllerInterface {
+	/**
+	 * 
+	 */
+//	private static final long serialVersionUID = -5556150044061540965L;
+
 	public static Auth currentAuth = null;
+	
+	DataAccess abc=new DataAccessFacade();
 	
 	@Override
 	public void login(String id, String password) throws LoginException {
@@ -52,26 +59,49 @@ public class SystemController implements ControllerInterface {
 		// TODO Auto-generated method stub
 		Book b;
 		LibraryMember lm;
-		lm = searchMember(memberId);
+		try {
+			lm = abc.searchMember(memberId);
+		
 		System.out.println(lm);
 		b = searchBook(isbn);
-		BookCopy bc = b.getNextAvailableCopy();
-		DataAccess da = new DataAccessFacade();
-		try{
 		
 		
+		//DataAccess da = new DataAccessFacade();
 		
-		lm.checkOut(bc, LocalDate.now(), b.getMaxCheckoutLength());
+		BookCopy bc;
+		try {
+			bc = b.getNextAvailableCopy();
+			//if(bc==null)throw new LibrarySystemException("Book copy not Available");
+			if(bc==null)throw new LibrarySystemException("All copies of Book are checked Out");
+			lm.checkOut(bc, LocalDate.now(), b.getMaxCheckoutLength());
+			bc.changeAvailability();
+			
+			System.out.println(""+abc+lm);
+			abc.updateMember(lm);
+			System.out.println("something");
+			
+			abc.updateBook(b);
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			throw new LibrarySystemException("Book Not Available");
+			
+		}
+		
+		
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			throw new LibrarySystemException("Invalid Member ID");
+			
+		}
 		
 		
 		
 		}
-		finally{
-		da.updateMember(lm);
-		bc.changeAvailability();
-		da.updateBook(b);
-		}
 		
-	}
+		
+		
+		
+	
 	
 }

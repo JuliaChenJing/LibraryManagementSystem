@@ -1,30 +1,46 @@
 package application;
 
-import dataaccess.*;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import business.Address;
-import business.SystemController;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.application.Application;  
+import javafx.beans.property.SimpleStringProperty;  
+import javafx.collections.FXCollections;  
+import javafx.collections.ObservableList;  
+import javafx.geometry.Insets;  
+import javafx.scene.Group;  
+import javafx.scene.Scene;  
+import javafx.scene.control.Label;  
+import javafx.scene.control.TableColumn;  
+import javafx.scene.control.TableView;  
+import javafx.scene.control.cell.PropertyValueFactory;  
+import javafx.scene.layout.VBox;  
+import javafx.scene.text.Font;  
+import javafx.stage.Stage;  
 
-public class UI extends Application {
+public class test extends Application {
 
-	DataAccessFacade df  = new DataAccessFacade();
-	
-	SystemController sc = new SystemController();
-	
 	String Title = "LMS";
 	// master pane,show the border of the window
 	BorderPane border = new BorderPane();
@@ -35,7 +51,7 @@ public class UI extends Application {
 	// all the panes in the middle
 	GridPane login = new GridPane();
 
-	Auth auth = Auth.NONE;
+	static int auth = 0;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -85,7 +101,7 @@ public class UI extends Application {
 
 		Label informationLable = new Label("            ");
 		loginGrid.add(informationLable, 0, 7);
-		informationLable.setTextFill(Color.RED);  
+		informationLable.setTextFill(Color.RED);
 
 		// BUTTON
 		Button btnSubmit = new Button("Submit");
@@ -114,24 +130,20 @@ public class UI extends Application {
 		btnSubmit.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				
-				
-				auth = df.login(userIdTextField.getText(), passwordTextField.getText());
-				
 				// do something if the button is clicked
-//				if (userIdTextField.getText().equals("1")
-//						&& passwordTextField.getText().equals("1")) {
-//
-//					informationLable.setText(("librarian login successfully"));
-//					informationLable.setTextFill(Color.RED);  
-//					
-			
-					border.setCenter(getWelcomeLibrarian("Welcome You are a "+auth));
-					// FlowPane xx = (FlowPane) border.getLeft();
-				
+				if (userIdTextField.getText().equals("1")
+						&& passwordTextField.getText().equals("1")) {
 
-//				}
-/*
+					informationLable.setText(("librarian login successfully"));
+					informationLable.setTextFill(Color.RED);
+
+					auth = 1;
+					border.setCenter(getWelcomeLibrarian("Welcome You are a librarian"));
+					// FlowPane xx = (FlowPane) border.getLeft();
+					auth = 1;
+
+				}
+
 				if (userIdTextField.getText().equals("2")
 						&& passwordTextField.getText().equals("2"))
 				// System.out.println("admin login successfully");
@@ -152,7 +164,7 @@ public class UI extends Application {
 
 					border.setCenter(getWelcomeLibrarian("Welcome You are a librarian and admin"));
 					// invoke both window
-//		}*/				
+				}
 				border.setLeft(getMenuFlow());
 
 			}
@@ -164,7 +176,7 @@ public class UI extends Application {
 			public void handle(ActionEvent event) {
 
 				informationLable.setText("log out successfully");
-				auth = null;
+				auth = 0;
 
 				border.setLeft(getMenuFlow());
 			}
@@ -209,7 +221,7 @@ public class UI extends Application {
 		Label informationLable = new Label(
 				"information:if the book is available or if one is a library member  ");
 		checkoutGrid.add(informationLable, 1, 4);
-		informationLable.setTextFill(Color.RED);  
+		informationLable.setTextFill(Color.RED);
 
 		// TEXTField
 		TextField memberIDTextField = new TextField();
@@ -299,8 +311,16 @@ public class UI extends Application {
 
 		// };
 		switch (auth) {
-		
-		case LIBRARIAN:
+		case 0: {
+			btn0.setDisable(true);
+			btn1.setDisable(true);
+			btn2.setDisable(true);
+			btn3.setDisable(true);
+			btn4.setDisable(true);
+			btn5.setDisable(true);
+			break;
+		}
+		case 1:
 
 		{
 			btn0.setDisable(true);
@@ -312,7 +332,7 @@ public class UI extends Application {
 			break;
 		}
 
-		case ADMIN:
+		case 2:
 
 		{
 			btn0.setDisable(false);
@@ -323,7 +343,7 @@ public class UI extends Application {
 			btn5.setDisable(true);
 			break;
 		}
-		case BOTH:
+		case 3:
 
 		{
 			btn0.setDisable(false);
@@ -332,15 +352,6 @@ public class UI extends Application {
 			btn3.setDisable(false);
 			btn4.setDisable(false);
 			btn5.setDisable(false);
-			break;
-		}
-		default: {
-			btn0.setDisable(true);
-			btn1.setDisable(true);
-			btn2.setDisable(true);
-			btn3.setDisable(true);
-			btn4.setDisable(true);
-			btn5.setDisable(true);
 			break;
 		}
 
@@ -381,8 +392,8 @@ public class UI extends Application {
 
 		Label informationLable = new Label("information needed to show:");
 		addGrid.add(informationLable, 1, 9);
-		informationLable.setTextFill(Color.RED);  
-		
+		informationLable.setTextFill(Color.RED);
+
 		// TEXTField
 
 		TextField firstnameTextField = new TextField();
@@ -405,9 +416,6 @@ public class UI extends Application {
 
 		TextField cellTextField = new TextField();
 		addGrid.add(cellTextField, 2, 7);
-		
-		TextField memId = new TextField();
-		addGrid.add(memId, 2, 0);
 
 		// Button
 		Button btnAddLibraryMember = new Button("Add New Library Member");
@@ -422,16 +430,7 @@ public class UI extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				// do something if the button is clicked
-				
-				Address a = new Address(streetTextField.getText(), cityTextField.getText(), stateTextField.getText(), zipTextField.getText());
-				//String m = 
-				try {
-					df.saveNewMember(new LibraryMember(memId.getText(), firstnameTextField.getText(), lastnameTextField.getText(), cellTextField.getText(), a));
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			informationLable.setText("library member added successfully");
+				informationLable.setText("library member added successfully");
 			}
 
 		});
@@ -474,7 +473,7 @@ public class UI extends Application {
 		Label informationLable = new Label(
 				"you could print the informaiton  needed here");
 		searchGrid.add(informationLable, 1, 9);
-		informationLable.setTextFill(Color.RED);  
+		informationLable.setTextFill(Color.RED);
 		// TEXTField
 
 		TextField idTextField = new TextField();
@@ -513,7 +512,10 @@ public class UI extends Application {
 		hbBtnUpdate.setAlignment(Pos.BOTTOM_RIGHT);
 		hbBtnUpdate.getChildren().add(btnUpdate);
 		searchGrid.add(hbBtnUpdate, 2, 8);
-
+		
+		//searchGrid.add(getLibraryMemberTable(),2,9);
+		border.setBottom(getLibraryMemberTable());
+	
 		return searchGrid;
 
 	}
@@ -625,5 +627,101 @@ public class UI extends Application {
 
 		return checkCopyStatusGrid;
 	}
+
+	public TableView getLibraryMemberTable() {
+		TableView table = new TableView();
+		table.setEditable(true);
+		
+		final ObservableList<TableData> data = FXCollections.observableArrayList(  
+			    new TableData("Harry Potter", "Smith", "jacob.smith@example.com","201601","201603"),  
+			    new TableData("Isabella", "Johnson", "isabella.johnson@example.com","201601","201603"), 
+			    new TableData("Ethan", "Williams", "ethan.williams@example.com","201601","201603"),  
+			    new TableData("Emma", "Jones", "emma.jones@example.com","201601","201603"),
+			    new TableData("Michael", "Brown", "michael.brown@example.com","201601","201603")
+			);  
+		
+		TableColumn bookNameCol = new TableColumn("Book Name");  
+        bookNameCol.setMinWidth(200);  
+        bookNameCol.setCellValueFactory(  
+                new PropertyValueFactory<>("bookName"));  
+   
+        TableColumn isbnCol = new TableColumn("ISBN");  
+        isbnCol.setMinWidth(200);  
+        isbnCol.setCellValueFactory(  
+                new PropertyValueFactory<>("ISBN"));  
+   
+        TableColumn copyNumCol = new TableColumn("Book Copy Number");  
+        copyNumCol.setMinWidth(200);  
+        copyNumCol.setCellValueFactory(  
+                new PropertyValueFactory<>("copyNum"));  
+        
+        TableColumn checkoutDateCol = new TableColumn("Checkout Date");  
+        checkoutDateCol.setMinWidth(200);  
+        checkoutDateCol.setCellValueFactory(  
+                new PropertyValueFactory<>("checkoutDate"));  
+   
+        TableColumn dueDateCol = new TableColumn("Due Date");  
+        dueDateCol.setMinWidth(200);  
+        dueDateCol.setCellValueFactory(  
+                new PropertyValueFactory<>("dueDate"));  
+        
+        
+        //set data to table
+        table.setItems(data);  
+        table.getColumns().addAll(bookNameCol,isbnCol, copyNumCol,checkoutDateCol,dueDateCol);  
+		return table;
+	}
+	
+	public static class TableData {  
+	    private final SimpleStringProperty bookName;  
+	    private final SimpleStringProperty isbn;  
+	    private final SimpleStringProperty copyNum;  
+	    private final SimpleStringProperty checkoutDate;  
+	    private final SimpleStringProperty dueDate;  
+	    
+	   
+	    private TableData(String b, String i, String c,String checkoutDate,String dueDate) {  
+	        this.bookName = new SimpleStringProperty(b);  
+	        this.isbn = new SimpleStringProperty(i);  
+	        this.copyNum = new SimpleStringProperty(c);  
+	        this.checkoutDate=new SimpleStringProperty(checkoutDate);  
+	        this.dueDate=new SimpleStringProperty(dueDate);  
+	    }  
+	   
+	    public String getBookName() {  
+	        return bookName.get();  
+	    }  
+	    public void setBookName(String fName) {  
+	        bookName.set(fName);  
+	    }  
+	          
+	    public String getISBN() {  
+	        return isbn.get();  
+	    }  
+	    public void setISBN(String fName) {  
+	        isbn.set(fName);  
+	    }  
+	      
+	    public String getCopyNum() {  
+	        return copyNum.get();  
+	    }  
+	    public void setCopyNum(String fName) {  
+	        copyNum.set(fName);  
+	    }  
+	    public String getCheckoutDate() {  
+	        return checkoutDate.get();  
+	    }  
+	    public void setCheckoutDate(String fName) {  
+	        checkoutDate.set(fName);  
+	    }  
+	    
+	    public String getDueDate() {  
+	        return dueDate.get();  
+	    }  
+	    public void setDueDate(String fName) {  
+	        dueDate.set(fName);  
+	    }  
+	          
+	}  
 
 }

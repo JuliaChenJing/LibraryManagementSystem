@@ -8,17 +8,15 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 
+import business.Author;
 import business.Book;
-
 
 public class DataAccessFacade implements DataAccess {
 	
-	enum StorageType {
-		BOOKS, MEMBERS, USERS;
-	}
+	
 	
 	public static final String OUTPUT_DIR = System.getProperty("user.dir") 
-			+ "//src//dataaccess//storage";
+			+ "\\src\\dataaccess\\storage";
 	public static final String DATE_PATTERN = "MM/dd/yyyy";
 		
 	////specialized lookup methods
@@ -55,8 +53,20 @@ public class DataAccessFacade implements DataAccess {
 		libraryMap.put(memId, member);
 		saveToStorage(StorageType.MEMBERS, libraryMap);
 	}
+	public void saveNewAuthor(Author member){
+		HashMap<String, Author> authormap = new HashMap<String, Author>();
+		String memId = member.getTelephone();
+		authormap.put(memId, member);
+		saveToStorage(StorageType.AUTHORS, authormap);
+	}
 		
 	
+	public HashMap<String, Author> readAuthorMap() {
+		// TODO Auto-generated method stub
+		return (HashMap<String, Author>) readFromStorage(StorageType.AUTHORS);
+		//return null;
+	}
+
 	public void updateMember(LibraryMember member) {
 	//	LibraryMember mem =  searchMember(member.getMemberId());
 		HashMap<String, LibraryMember> hmap = readLibraryMap();
@@ -78,12 +88,14 @@ public class DataAccessFacade implements DataAccess {
 	////// read methods that return full maps
 	
 	
-	@SuppressWarnings("unchecked")
-	public  HashMap<String,Book> readBooksMap() {	
-		return (HashMap<String,Book>) readFromStorage(StorageType.BOOKS);
+	//@SuppressWarnings("unchecked")
+	public  HashMap<String,Book> readBooksMap() {
+		//if(readFromStorage(StorageType.BOOKS) instanceof HashMap<String,Book>)
+		
+				return (HashMap<String,Book>) readFromStorage(StorageType.BOOKS);
 	}
 	
-	@SuppressWarnings("unchecked")
+	//@SuppressWarnings("unchecked")
 	public  HashMap<String,LibraryMember> readLibraryMap() {	
 		return (HashMap<String,LibraryMember>) readFromStorage(StorageType.MEMBERS);
 	}
@@ -91,7 +103,7 @@ public class DataAccessFacade implements DataAccess {
 	//public HashMap<String, LibraryMember> readMemberMap() {
 	
 	
-	@SuppressWarnings("unchecked")
+	//@SuppressWarnings("unchecked")
 	public HashMap<String, User> readUserMap() {
 		return (HashMap<String, User>)readFromStorage(StorageType.USERS);
 	}
@@ -101,6 +113,7 @@ public class DataAccessFacade implements DataAccess {
 	///// - used just once at startup  
 	//static void loadMemberMap(List<LibraryMember> memberList) {
 		
+	//static
 	static void loadBookMap(List<Book> bookList) {
 		HashMap<String, Book> map = new HashMap<String, Book>();
 		//extract each book in the bookList, and add (ISBN, each bookItem) as an entry in the HashMap
@@ -120,10 +133,10 @@ public class DataAccessFacade implements DataAccess {
 		System.out.println("--_++"+map);
 		saveToStorage(StorageType.MEMBERS, map);
 	}
-	static void saveToStorage(StorageType type, Object ob) {
+	static	void saveToStorage(StorageType type, Object ob) {
 		ObjectOutputStream out = null;
 		try {
-			Path path = FileSystems.getDefault().getPath(OUTPUT_DIR+"//"+type.toString());
+			Path path = FileSystems.getDefault().getPath(OUTPUT_DIR+"\\"+type.toString());
 			System.out.println(path);
 			out = new ObjectOutputStream(Files.newOutputStream(path));
 			out.writeObject(ob);
@@ -142,7 +155,7 @@ public class DataAccessFacade implements DataAccess {
 		ObjectInputStream in = null;
 		Object retVal = null;
 		try {
-			Path path = FileSystems.getDefault().getPath(OUTPUT_DIR+"//"+type.toString());
+			Path path = FileSystems.getDefault().getPath(OUTPUT_DIR+"\\"+type.toString());
 			in = new ObjectInputStream(Files.newInputStream(path));
 			retVal = in.readObject();
 		} catch(Exception e) {
@@ -163,7 +176,15 @@ public class DataAccessFacade implements DataAccess {
 		HashMap<String, Book> hmap = readBooksMap();
 		//bc.changeAvailability();
 		hmap.replace(b.getIsbn(), b);
-		saveToStorage(StorageType.MEMBERS, hmap);
+		saveToStorage(StorageType.BOOKS, hmap);
+	}
+
+	public static void loadAuthorMap(List<Author> allAuthors) {
+		// TODO Auto-generated method stub
+		HashMap<String, Author> map = new HashMap<String, Author>();
+		allAuthors.forEach(lambda -> map.put(lambda.getLastName(), lambda));
+		System.out.println("--_++"+map);
+		saveToStorage(StorageType.AUTHORS, map);
 	}
 		
 }

@@ -69,9 +69,9 @@ public class TestData {
 	@SuppressWarnings("serial")
 	List<User> allUsers = new ArrayList<User>() {
 		{
-			add(new User("101", "xyz", Auth.LIBRARIAN));
-			add(new User("102", "abc", Auth.ADMIN));
-			add(new User("103", "111", Auth.BOTH));
+			add(new User("librarian", "librarian", Auth.LIBRARIAN));
+			add(new User("admin", "admin", Auth.ADMIN));
+			add(new User("both", "both", Auth.BOTH));
 		}
 	};
 	
@@ -79,17 +79,17 @@ public class TestData {
 		TestData td = new TestData();
 		td.bookData();
 		td.userData();
-//		td.libraryMemberData();
-		
+		td.libraryMemberData();
+		//td.authorData();
 		SystemController sc = new SystemController();
-		sc.checkoutBook("123", "23-11451");
+		//sc.checkoutBook("123", "23-11451");
 		System.out.println("-----------------------------------------------");
 		DataAccess da = new DataAccessFacade();
 		
 		System.out.println(da.readBooksMap());
 		System.out.println(da.readUserMap());
 		System.out.println("-----------------------------------------------");
-//		da.readLibraryMap();
+		da.readLibraryMap();
 //		System.out.println("--->>"+da.readLibraryMap());
 		System.out.println("-----------------------------------------------");
 		
@@ -98,6 +98,7 @@ public class TestData {
 		System.out.println("--- for update of Asutosh -");
 		
 		da.updateMember(libraryMembers.get(1));
+		
 	}
 	///create books
 	public void bookData() {
@@ -113,6 +114,8 @@ public class TestData {
 	public void userData() {
 		DataAccessFacade.loadUserMap(allUsers);
 	}
+	
+	
 	
 	public void checkoutRecordData() {
 //		allRecords.get(0).addEntry(allEntries.get(0));
